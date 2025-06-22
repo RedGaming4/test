@@ -1,25 +1,55 @@
-import logo from './logo.svg';
+
 import './App.css';
+import pokemon from './pokemon.json';
+import PropTypes from "prop-types"
+import React from 'react'
+
+
+const PokemonRow = ({ pokemon }) => (
+          <tr>
+            <td>{pokemon.name.english}</td>
+            <td>{pokemon.type.join(' and ')}</td>
+          </tr>
+
+)
+
+PokemonRow.propTypes = {
+  pokemon: PropTypes.shape({
+    name: PropTypes.shape({
+      english: PropTypes.string,
+    }), 
+    type: PropTypes.arrayOf(PropTypes.string)
+  }),
+};
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [filter, filterSet] = React.useState("");
+  return <div
+            style={{
+              margin: "auto",
+              width: 800,
+              paddingTop: "1rem",
+            }}  
+  >
+    <h1 className="title">Pokemon Search</h1>
+    <input value={filter} onChange={(evt) =>  filterSet(evt.target.value)}></input>
+    <table width="100%">
+      <thead>
+        <tr>
+        <th>Pokemon Name</th>
+        <th>Abilities</th>
+      </tr>
+      </thead>
+      <tbody>
+      {pokemon
+      .filter((pokemon) => pokemon.name.english.toLowerCase().includes(filter.toLowerCase()))
+      .slice(0,20).map((pokemon) => (
+      <PokemonRow pokemon={pokemon} key={pokemon.id} />
+      ))}
+      </tbody>
+      
+    </table>
+  </div>;
 }
 
 export default App;
